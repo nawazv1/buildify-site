@@ -150,6 +150,63 @@
     .contact-grid{ grid-template-columns:1fr; gap:36px; }
   }
 
+  /* FAQ Assistant widget */
+  #faq-launcher{
+    position:fixed; bottom:24px; right:24px; z-index:100;
+    background:var(--amber); color:var(--blue-deep); border:none; border-radius:50px;
+    padding:14px 22px; font-family:'Inter', sans-serif; font-weight:700; font-size:0.9rem;
+    display:flex; align-items:center; gap:8px; cursor:pointer;
+    box-shadow:0 6px 20px rgba(18,40,63,0.25); transition:transform 0.15s, background 0.2s;
+  }
+  #faq-launcher:hover{ transform:translateY(-2px); background:var(--amber-deep); }
+  #faq-launcher svg{ width:18px; height:18px; }
+
+  #faq-panel{
+    position:fixed; bottom:24px; right:24px; z-index:101;
+    width:340px; max-width:calc(100vw - 32px); height:460px; max-height:calc(100vh - 48px);
+    background:var(--paper); border-radius:12px; box-shadow:0 12px 40px rgba(18,40,63,0.3);
+    display:none; flex-direction:column; overflow:hidden; border:1px solid var(--line);
+  }
+  #faq-panel.open{ display:flex; }
+  .faq-head{
+    background:var(--blue); color:var(--paper); padding:16px 18px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .faq-head-title{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:1rem; }
+  .faq-head-sub{ font-size:0.75rem; color:rgba(250,250,246,0.65); margin-top:2px; }
+  .faq-close{ background:none; border:none; color:var(--paper); cursor:pointer; font-size:1.1rem; opacity:0.7; padding:4px; }
+  .faq-close:hover{ opacity:1; }
+
+  .faq-body{ flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; background:var(--grid); }
+  .faq-msg{ max-width:82%; padding:10px 13px; border-radius:10px; font-size:0.87rem; line-height:1.45; }
+  .faq-msg.bot{ background:var(--paper); color:var(--ink); align-self:flex-start; border:1px solid var(--line); border-bottom-left-radius:3px; }
+  .faq-msg.user{ background:var(--blue); color:var(--paper); align-self:flex-end; border-bottom-right-radius:3px; }
+
+  .faq-chips{ display:flex; flex-wrap:wrap; gap:6px; padding:0 16px 12px; background:var(--grid); }
+  .faq-chip{
+    background:var(--paper); border:1px solid var(--line); color:var(--blue);
+    font-size:0.78rem; padding:6px 11px; border-radius:20px; cursor:pointer; font-family:'Inter', sans-serif;
+    transition:background 0.15s;
+  }
+  .faq-chip:hover{ background:var(--grid); border-color:var(--amber); }
+
+  .faq-input-row{ display:flex; gap:8px; padding:12px; border-top:1px solid var(--line); background:var(--paper); }
+  .faq-input-row input{
+    flex:1; padding:10px 12px; border-radius:20px; border:1.5px solid var(--line);
+    font-family:'Inter', sans-serif; font-size:0.87rem; background:var(--grid); color:var(--ink);
+  }
+  .faq-input-row input:focus{ outline:none; border-color:var(--amber); }
+  .faq-input-row button{
+    background:var(--amber); color:var(--blue-deep); border:none; border-radius:50%;
+    width:38px; height:38px; flex-shrink:0; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .faq-input-row button:hover{ background:var(--amber-deep); }
+
+  @media (max-width:480px){
+    #faq-panel{ right:16px; left:16px; width:auto; bottom:16px; }
+    #faq-launcher{ right:16px; bottom:16px; }
+  }
+
   @media (max-width:860px){
     .hero .wrap{ grid-template-columns:1fr; }
     .stack{ margin:0 auto; max-width:280px; }
@@ -343,6 +400,105 @@
 <footer>
   <div class="wrap">© 2026 Buildify. All rights reserved.</div>
 </footer>
+
+<!-- FAQ Assistant -->
+<button id="faq-launcher" onclick="toggleFaq()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  Ask us anything
+</button>
+
+<div id="faq-panel">
+  <div class="faq-head">
+    <div>
+      <div class="faq-head-title">Buildify Assistant</div>
+      <div class="faq-head-sub">Usually replies instantly</div>
+    </div>
+    <button class="faq-close" onclick="toggleFaq()">✕</button>
+  </div>
+  <div class="faq-body" id="faq-body"></div>
+  <div class="faq-chips" id="faq-chips"></div>
+  <div class="faq-input-row">
+    <input type="text" id="faq-input" placeholder="Type a question..." onkeydown="if(event.key==='Enter')sendFaq()">
+    <button onclick="sendFaq()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  const faqData = [
+    { keys: ['price','cost','how much','pricing','expensive','charge'],
+      a: "Pricing depends on what you need. A simple one-page site starts lower, and multi-page or booking-integrated builds are scoped based on what you want. Want to leave your email above and we'll send an exact quote?" },
+    { keys: ['how long','timeline','turnaround','when','fast'],
+      a: "Most sites go from first call to live in about two weeks: a quick call, a design draft, revisions, then launch." },
+    { keys: ['what do you build','what do you do','services','offer','include'],
+      a: "We build clean, mobile-friendly websites for small businesses, plus optional add-ons like this FAQ assistant and an ongoing care plan for updates and hosting." },
+    { keys: ['phone','call','number','contact','reach'],
+      a: "You can call or text us directly at 631-805-7986, or fill out the form above and we'll reach out." },
+    { keys: ['care plan','maintenance','update','hosting','ongoing'],
+      a: "Our care plan covers hosting, domain renewal, ongoing content edits, and uptime monitoring, billed monthly as an add-on to your site." },
+    { keys: ['faq','chatbot','assistant','this widget','ai'],
+      a: "This exact chat widget is something we build into client sites too, it answers common questions automatically so you get fewer repetitive calls or emails." },
+    { keys: ['sample','example','portfolio','demo','see your work'],
+      a: "Definitely, ask us for a link and we'll send over an example site so you can see the quality before committing to anything." },
+  ];
+
+  const defaultReply = "Good question, that's something we'd rather answer directly. Leave your info above or call 631-805-7986 and we'll get back to you.";
+
+  function matchFaq(text){
+    const lower = text.toLowerCase();
+    for (const item of faqData){
+      if (item.keys.some(k => lower.includes(k))) return item.a;
+    }
+    return defaultReply;
+  }
+
+  function addMsg(text, who){
+    const body = document.getElementById('faq-body');
+    const div = document.createElement('div');
+    div.className = 'faq-msg ' + who;
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function sendFaq(){
+    const input = document.getElementById('faq-input');
+    const text = input.value.trim();
+    if (!text) return;
+    addMsg(text, 'user');
+    input.value = '';
+    setTimeout(() => addMsg(matchFaq(text), 'bot'), 350);
+  }
+
+  function askChip(q){
+    addMsg(q, 'user');
+    setTimeout(() => addMsg(matchFaq(q), 'bot'), 350);
+  }
+
+  function renderChips(){
+    const chips = document.getElementById('faq-chips');
+    chips.innerHTML = '';
+    ['How much does it cost?', "What's the timeline?", 'Can I see a sample?'].forEach(q => {
+      const b = document.createElement('button');
+      b.className = 'faq-chip';
+      b.textContent = q;
+      b.onclick = () => askChip(q);
+      chips.appendChild(b);
+    });
+  }
+
+  let faqOpened = false;
+  function toggleFaq(){
+    const panel = document.getElementById('faq-panel');
+    panel.classList.toggle('open');
+    if (!faqOpened && panel.classList.contains('open')){
+      faqOpened = true;
+      addMsg("Hi! I'm the Buildify assistant. Ask me about pricing, timelines, or what we build, or tap a question below.", 'bot');
+      renderChips();
+    }
+  }
+</script>
 
 </body>
 </html>

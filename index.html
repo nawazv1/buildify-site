@@ -99,7 +99,7 @@
 
   /* Build sequence (real order — numbering justified) */
   .process-list{ margin-top:56px; display:flex; flex-direction:column; }
-  .process-row{ display:grid; grid-template-columns:64px 1fr 90px; gap:24px; padding:26px 0; border-top:1px solid var(--line); align-items:start; }
+  .process-row{ display:grid; grid-template-columns:64px 1fr; gap:24px; padding:26px 0; border-top:1px solid var(--line); align-items:start; }
   .process-row:last-child{ border-bottom:1px solid var(--line); }
   .process-row .step{ font-family:'Space Grotesk', sans-serif; font-size:1.4rem; color:var(--amber-deep); font-weight:700; }
   .process-row h3{ font-size:1.08rem; color:var(--blue); margin-bottom:6px; }
@@ -306,22 +306,18 @@
       <div class="process-row">
         <div class="step">01</div>
         <div><h3>Quick call</h3><p>15 minutes to understand your business and what your site needs to do for you.</p></div>
-        <div class="when">Day 1</div>
       </div>
       <div class="process-row">
         <div class="step">02</div>
         <div><h3>Design draft</h3><p>A real, clickable preview of your site, not a static mockup.</p></div>
-        <div class="when">Day 2–5</div>
       </div>
       <div class="process-row">
         <div class="step">03</div>
         <div><h3>Revisions</h3><p>You tell us what to change, copy, layout, color, and we keep adjusting.</p></div>
-        <div class="when">Day 5–9</div>
       </div>
       <div class="process-row">
         <div class="step">04</div>
         <div><h3>Launch</h3><p>Your site goes live on your domain. We show you how to make simple edits yourself.</p></div>
-        <div class="when">Day 10–14</div>
       </div>
     </div>
   </div>
@@ -351,7 +347,8 @@
         <div class="amount">Add-on</div>
         <div class="cadence">ongoing, monthly</div>
         <ul>
-          <li>Hosting & domain included</li>
+          <li>Hosting setup & management</li>
+          <li>Domain renewal reminders (you keep ownership)</li>
           <li>Ongoing content edits</li>
           <li>Uptime monitoring</li>
           <li>Priority support</li>
